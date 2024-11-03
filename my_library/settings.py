@@ -10,6 +10,19 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
+import sys
+
+# Label the environment we are in.
+# This is set up for PythonAnywhere deployment and must change if the
+# deployment platform changes.
+if 'test' in sys.argv:
+    ENVIRONMENT = 'test'
+elif 'PYTHONANYWHERE_SITE' in os.environ:
+    ENVIRONMENT = 'production'
+else:
+    ENVIRONMENT = 'development'
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,10 +33,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-_tafogtw1&95%0&pi%8ig618u*$i9agu1ypewtqz4olzf%z*a#'
+if ENVIRONMENT == 'production':
+    SECRET_KEY = str(os.getenv('SECRET_KEY'))
+else:
+    SECRET_KEY = 'django-insecure-_tafogtw1&95%0&pi%8ig618u*$i9agu1ypewtqz4olzf%z*a#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = ENVIRONMENT == 'development'
 
 ALLOWED_HOSTS = ['k23093489.pythonanywhere.com', 'localhost']
 
@@ -128,3 +144,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Added lines to incorporate forms using bootstrap
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+
+
+# Security settings
+if ENVIRONMENT == 'production':
+    SECURE_HSTS_SECONDS = 3600
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_PRELOAD = True
+
