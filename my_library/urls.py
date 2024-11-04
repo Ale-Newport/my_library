@@ -21,7 +21,7 @@ from django.shortcuts import redirect
 from loans import views
 
 urlpatterns = [
-    path('', lambda request: redirect('welcome')),  # Redirect root to 'welcome' page
+    path('', views.welcome, name='root'),
     path('welcome/', views.welcome, name='welcome'),
     path('books/', views.list_books, name='list_books'),
     path('book/<int:book_id>', views.get_book, name='get_book'),
