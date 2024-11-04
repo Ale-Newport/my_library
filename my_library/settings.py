@@ -12,10 +12,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import os
 import sys
+from pathlib import Path
 
-# Label the environment we are in.
-# This is set up for PythonAnywhere deployment and must change if the
-# deployment platform changes.
+# Define the environment based on platform
 if 'test' in sys.argv:
     ENVIRONMENT = 'test'
 elif 'PYTHONANYWHERE_SITE' in os.environ:
@@ -23,29 +22,22 @@ elif 'PYTHONANYWHERE_SITE' in os.environ:
 else:
     ENVIRONMENT = 'development'
 
-from pathlib import Path
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
+# Secret key configuration
 if ENVIRONMENT == 'production':
-    SECRET_KEY = str(os.getenv('SECRET_KEY'))
+    SECRET_KEY = os.getenv('SECRET_KEY', 'fallback-secret-key')  # Replace 'fallback-secret-key' with a strong key or ensure 'SECRET_KEY' is set in PythonAnywhere environment
 else:
     SECRET_KEY = 'django-insecure-_tafogtw1&95%0&pi%8ig618u*$i9agu1ypewtqz4olzf%z*a#'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# Debug configuration
 DEBUG = ENVIRONMENT == 'development'
 
+# Allowed hosts configuration
 ALLOWED_HOSTS = ['k23093489.pythonanywhere.com', '127.0.0.1']
 
-
-# Application definition
-
+# Installed apps
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -58,6 +50,7 @@ INSTALLED_APPS = [
     'loans',
 ]
 
+# Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -68,8 +61,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Root URL configuration
 ROOT_URLCONF = 'my_library.urls'
 
+# Templates configuration
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -86,12 +81,10 @@ TEMPLATES = [
     },
 ]
 
+# WSGI application
 WSGI_APPLICATION = 'my_library.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
+# Database configuration
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -99,10 +92,7 @@ DATABASES = {
     }
 }
 
-
 # Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -118,36 +108,24 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
-
+# Internationalization settings
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-
+# Static files settings
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Added lines to incorporate forms using bootstrap
+# Crispy forms settings
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-
-
-# Security settings
+# Production security settings
 if ENVIRONMENT == 'production':
     SECURE_HSTS_SECONDS = 3600
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
@@ -155,4 +133,7 @@ if ENVIRONMENT == 'production':
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_HSTS_PRELOAD = True
-
+else:
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
